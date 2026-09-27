@@ -17,6 +17,7 @@ import { ChatInput } from './components/ChatInput';
 import { EmptyState } from './components/EmptyState';
 import { ChatSettingsModal } from './components/ChatSettingsModal';
 import { DesktopInstallModal } from './components/DesktopInstallModal';
+import { MBBSQuiz } from './components/MBBSQuiz';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 import { usePWAInstall } from './hooks/usePWAInstall';
@@ -27,6 +28,7 @@ import {
   RotateCcw,
   Sliders,
   Monitor,
+  GraduationCap,
 } from 'lucide-react';
 
 export default function App() {
@@ -39,6 +41,57 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDesktopModalOpen, setIsDesktopModalOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+  // Sync quiz URL routing on load and on browser back/forward
+  useEffect(() => {
+    const checkQuizRoute = () => {
+      const p = window.location.pathname.toLowerCase();
+      const s = window.location.search.toLowerCase();
+      const h = window.location.hash.toLowerCase();
+      if (
+        p.startsWith('/quiz') ||
+        p.startsWith('/mbbs') ||
+        s.includes('quiz') ||
+        h.includes('quiz')
+      ) {
+        setIsQuizOpen(true);
+      } else {
+        setIsQuizOpen(false);
+      }
+    };
+
+    checkQuizRoute();
+    window.addEventListener('popstate', checkQuizRoute);
+    return () => window.removeEventListener('popstate', checkQuizRoute);
+  }, []);
+
+  const handleOpenQuiz = () => {
+    setIsQuizOpen(true);
+    try {
+      const url = new URL(window.location.href);
+      if (!url.pathname.includes('/quiz')) {
+        url.pathname = '/quiz';
+        window.history.pushState({ quiz: true }, '', url.toString());
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleCloseQuiz = () => {
+    setIsQuizOpen(false);
+    try {
+      const url = new URL(window.location.href);
+      if (url.pathname.includes('/quiz') || url.search.includes('quiz')) {
+        url.pathname = '/';
+        url.search = '';
+        window.history.pushState({}, '', url.toString());
+      }
+    } catch {
+      // ignore
+    }
+  };
 
   const {
     isInstallable,
@@ -468,6 +521,7 @@ export default function App() {
         onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenInstallDesktop={() => setIsDesktopModalOpen(true)}
+        onOpenQuiz={handleOpenQuiz}
         isInstalled={isInstalled}
         isOpen={isSidebarOpen}
         onCloseMobile={() => setIsSidebarOpen(false)}
@@ -499,6 +553,20 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-1.5">
+            {/* MBBS Quiz Button */}
+            <button
+              type="button"
+              onClick={handleOpenQuiz}
+              title="Start MBBS 100-Question Quiz"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-950 dark:text-emerald-200 border border-emerald-500/30 transition-colors shadow-2xs"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span className="hidden sm:inline">MBBS Quiz</span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-1 py-0.2 rounded font-bold">
+                100 Qs
+              </span>
+            </button>
+
             {/* Add to Windows Desktop Button */}
             <button
               type="button"
@@ -553,6 +621,7 @@ export default function App() {
                 handleSendMessage(prompt);
               }}
               onOpenInstallDesktop={() => setIsDesktopModalOpen(true)}
+              onOpenQuiz={handleOpenQuiz}
             />
           ) : (
             <div className="pb-8">
@@ -621,6 +690,12 @@ export default function App() {
         isInstalled={isInstalled}
         onInstall={install}
         onDownloadShortcut={downloadWindowsShortcut}
+      />
+
+      {/* MBBS 100-Question Quiz Modal */}
+      <MBBSQuiz
+        isOpen={isQuizOpen}
+        onClose={handleCloseQuiz}
       />
     </div>
   );

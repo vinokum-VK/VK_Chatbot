@@ -17,6 +17,7 @@ import {
   SlidersHorizontal,
   CornerDownLeft,
   Monitor,
+  GraduationCap,
 } from 'lucide-react';
 import { PERSONAS } from '../utils/constants';
 
@@ -34,6 +35,7 @@ interface SidebarProps {
   onToggleTheme: () => void;
   onOpenSettings: () => void;
   onOpenInstallDesktop: () => void;
+  onOpenQuiz?: () => void;
   isInstalled?: boolean;
   isOpen: boolean;
   onCloseMobile: () => void;
@@ -134,6 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleTheme,
   onOpenSettings,
   onOpenInstallDesktop,
+  onOpenQuiz,
   isInstalled,
   isOpen,
   onCloseMobile,
@@ -483,6 +486,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Icon
             </span>
           </button>
+
+          {onOpenQuiz && (
+            <button
+              type="button"
+              onClick={() => {
+                onOpenQuiz();
+                onCloseMobile();
+              }}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-950 dark:text-emerald-200 border border-emerald-500/25 transition-colors font-medium shadow-2xs group"
+            >
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
+                <span className="font-semibold">MBBS QUIZ</span>
+              </div>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">
+                100 Qs
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Local Search Input Area */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { STARTER_PROMPTS } from '../utils/constants';
-import { Terminal, Cpu, Mail, Layers, Sparkles, Zap, ShieldCheck, Monitor } from 'lucide-react';
+import { Terminal, Cpu, Mail, Layers, Sparkles, Zap, ShieldCheck, Monitor, GraduationCap } from 'lucide-react';
 import { Persona } from '../types/chat';
 
 interface EmptyStateProps {
@@ -8,6 +8,7 @@ interface EmptyStateProps {
   activePersona: Persona;
   onOpenPersonaSelector?: () => void;
   onOpenInstallDesktop?: () => void;
+  onOpenQuiz?: () => void;
 }
 
 const ICONS_MAP: Record<string, React.ReactNode> = {
@@ -21,6 +22,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onSelectPrompt,
   activePersona,
   onOpenInstallDesktop,
+  onOpenQuiz,
 }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] max-w-3xl mx-auto px-4 py-8 text-center animate-in fade-in duration-300">
@@ -49,8 +51,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> 100% Free & Private
         </span>
         <span aria-hidden="true">·</span>
-        <span>Multimodal Vision</span>
-        <span aria-hidden="true">·</span>
+        {onOpenQuiz && (
+          <>
+            <button
+              type="button"
+              onClick={onOpenQuiz}
+              className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-bold transition-colors"
+            >
+              <GraduationCap className="w-4 h-4" /> MBBS Quiz (100 Qs)
+            </button>
+            <span aria-hidden="true">·</span>
+          </>
+        )}
         {onOpenInstallDesktop && (
           <>
             <button
