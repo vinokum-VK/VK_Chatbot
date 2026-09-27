@@ -1,0 +1,6 @@
+{
+  "name": "Echo - Free AI Chatbot",
+  "description": "A fast, smart, and free AI chatbot powered by Google Gemini with real-time streaming, multimodal vision, and custom personas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
